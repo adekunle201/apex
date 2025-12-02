@@ -1,37 +1,62 @@
--- =====================================================
--- 1. Establish workspace context for APEX import
--- =====================================================
-DECLARE
-    v_errm   VARCHAR2(4000);
-    v_stack  VARCHAR2(4000);
+prompt --install
 
-BEGIN
+begin
     apex_application_install.set_workspace('UAT');
-    apex_application_install.set_workspace_id(
-        apex_util.find_security_group_id('UAT')
-    );
-    apex_application_install.set_application_id(null);
-    --apex_application_install.set_application_alias('APP_102');
+    apex_application_install.set_application_id(102);
     apex_application_install.generate_offset;
-		@apex\app\app_102\f102\f102.sql
+end;
+/
 
-    EXCEPTION
-        WHEN OTHERS THEN
-            v_errm  := SQLERRM;
-            v_stack := DBMS_UTILITY.FORMAT_ERROR_BACKTRACE;
+@@application/set_environment.sql
+@@application/delete_application.sql
+@@application/create_application.sql
 
-            DBMS_OUTPUT.PUT_LINE('===============================');
-            DBMS_OUTPUT.PUT_LINE(' APEX IMPORT ERROR OCCURRED');
-            DBMS_OUTPUT.PUT_LINE('-------------------------------');
-            DBMS_OUTPUT.PUT_LINE('Error message: ' || v_errm);
-            DBMS_OUTPUT.PUT_LINE('Error stack:');
-            DBMS_OUTPUT.PUT_LINE(v_stack);
-            DBMS_OUTPUT.PUT_LINE('===============================');
+@@application/application_properties.sql
+@@application/user_interfaces.sql
 
-            -- RAISE AGAIN so CI/CD fails normally
-            RAISE;
+@@application/shared_components/navigation/lists/navigation_menu.sql
+@@application/shared_components/navigation/lists/navigation_bar.sql
+@@application/shared_components/navigation/listentry.sql
 
+@@application/shared_components/files/icons_app_icon_512_png.sql
+@@application/shared_components/files/icons_app_icon_32_png.sql
+@@application/shared_components/files/icons_app_icon_144_rounded_png.sql
+@@application/shared_components/files/icons_app_icon_192_png.sql
+@@application/shared_components/files/icons_app_icon_256_rounded_png.sql
 
-END;
+@@application/plugin_settings.sql
+@@application/shared_components/security/authorizations/administration_rights.sql
+@@application/shared_components/navigation/navigation_bar.sql
+@@application/shared_components/logic/application_settings.sql
 
-exit;
+@@application/shared_components/navigation/tabs/standard.sql
+@@application/shared_components/navigation/tabs/parent.sql
+@@application/pages/page_groups.sql
+
+@@application/shared_components/navigation/breadcrumbs/breadcrumb.sql
+@@application/shared_components/navigation/breadcrumbentry.sql
+
+@@application/shared_components/user_interface/templates/popuplov.sql
+@@application/shared_components/user_interface/themes.sql
+@@application/shared_components/user_interface/theme_style.sql
+@@application/shared_components/user_interface/theme_files.sql
+@@application/shared_components/user_interface/template_opt_groups.sql
+@@application/shared_components/user_interface/template_options.sql
+
+@@application/shared_components/globalization/language.sql
+@@application/shared_components/logic/build_options.sql
+@@application/shared_components/globalization/messages.sql
+@@application/shared_components/globalization/dyntranslations.sql
+
+@@application/shared_components/security/authentications/oracle_apex_accounts.sql
+
+@@application/user_interfaces/combined_files.sql
+
+@@application/pages/page_00000.sql
+@@application/pages/page_00001.sql
+@@application/pages/page_09999.sql
+
+@@application/deployment/definition.sql
+@@application/deployment/checks.sql
+@@application/deployment/buildoptions.sql
+@@application/end_environment.sql
