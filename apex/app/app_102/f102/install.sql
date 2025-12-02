@@ -1,6 +1,6 @@
 prompt --install
 @@application/set_environment.sql
-@@application/delete_application.sql
+--@@application/delete_application.sql
 @@application/create_application.sql
 @@application/user_interfaces.sql
 @@application/shared_components/navigation/lists/navigation_menu.sql
