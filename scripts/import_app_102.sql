@@ -13,8 +13,7 @@ BEGIN
     apex_application_install.set_application_id(null);
     --apex_application_install.set_application_alias('APP_102');
     apex_application_install.generate_offset;
-
-@apex/app/app_102/f102/install.sql
+		@apex\app\app_102\f102\f102.sql
 
     EXCEPTION
         WHEN OTHERS THEN
