@@ -3,16 +3,23 @@ DECLARE
     l_new_app_id NUMBER;
 BEGIN
      -- Use the exact name of your UAT workspace
-     apex_application_install.set_workspace('UAT'); 
+     APEX_APPLICATION_INSTALL.set_workspace('UAT'); 
      
      -- Add this line to set the schema the app runs under
-     apex_application_install.set_application_owner('UAT'); 
--- Automatically generate a new unique application ID
+     APEX_APPLICATION_INSTALL.set_application_owner('UAT'); 
+
+    -- Automatically generate a new unique application ID
+    -- Must prefix the function call
     l_new_app_id := APEX_APPLICATION_INSTALL.GET_AUTO_APPLICATION_ID;
+    
+    -- Must prefix the procedure call
     APEX_APPLICATION_INSTALL.SET_APPLICATION_ID(p_application_id => l_new_app_id);
-    apex_application_install.generate_offset;
+    
+    -- Must prefix the procedure call
+    APEX_APPLICATION_INSTALL.generate_offset;
 end;
 /
+
 @@../apex/app/app_102/f102/application/set_environment.sql
 --@@../apex/app/app_102/f102/application/delete_application.sql
 @@../apex/app/app_102/f102/application/create_application.sql
