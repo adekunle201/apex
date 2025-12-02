@@ -10,7 +10,6 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    # 🔑 Force all steps in this job to use cmd.exe, not PowerShell
     defaults:
       run:
         shell: cmd
@@ -19,14 +18,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Ensure SQLcl works
+      - name: Show SQLcl Version
         run: |
           "C:\sqlcl\bin\sql.exe" -v
 
-      - name: Deploy schema + APEX app
+      - name: Run schema_baselines.sql (DB Objects)
         env:
           DB_CONNECT: ${{ secrets.DB_CONNECT_STRING }}
           DB_USER: ${{ secrets.DB_DEPLOY_USER }}
           DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
         run: |
-          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -thin %DB_USER%@%DB_CONNECT% @apex\db\schema_baselines.sql
+          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @"%GITHUB_WORKSPACE%\apex\db\schema_baselines.sql"
+
+      - name: Run import_all.sql (APEX App + DB items)
+        env:
+          DB_CONNECT: ${{ secrets.DB_CONNECT_STRING }}
+          DB_USER: ${{ secrets.DB_DEPLOY_USER }}
+          DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
+        run: |
+          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @"%GITHUB_WORKSPACE%\apex\app\app_102\f102.sql"
