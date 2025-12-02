@@ -1,6 +1,5 @@
 prompt --install
 
-apex_application_install.set_workspace('UAT');  -- your workspace name
 @@application/set_environment.sql
 --@@application/delete_application.sql
 @@application/create_application.sql
