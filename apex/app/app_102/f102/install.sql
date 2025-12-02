@@ -1,10 +1,6 @@
 prompt --install
 
- apex_application_install.set_workspace('UAT');  -- your workspace name
-    apex_application_install.set_workspace_id(
-        apex_util.find_security_group_id('UAT')
-    );
-	
+apex_application_install.set_workspace('UAT');  -- your workspace name
 @@application/set_environment.sql
 --@@application/delete_application.sql
 @@application/create_application.sql
