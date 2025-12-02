@@ -1,258 +1,221 @@
 set serveroutput on size unlimited
-set long 100000
-set longchunksize 100000
-set pages 0
+set long 1000000
+set longchunksize 1000000
 set lines 200
+set pages 0
 set trimspool on
 set feedback off
 set heading off
 
 spool C:\Projects\apex-cicd\apex\db\schema_baselines.sql
 
-declare
-  -- Helper to write DDL plus a separator
-  procedure emit(p_ddl in clob) is
+DECLARE
+  procedure emit(p_clob in clob) is
   begin
-    if p_ddl is not null then
-      dbms_output.put_line(p_ddl);
+    if p_clob is not null then
+      dbms_output.put_line(p_clob);
       dbms_output.put_line('/');
-      dbms_output.put_line('');
+      dbms_output.put_line(''); -- separator
     end if;
   end;
-
-begin
-  -- Make generated DDL more portable
-  dbms_metadata.set_transform_param(dbms_metadata.session_transform, 'SEGMENT_ATTRIBUTES', false);
-  dbms_metadata.set_transform_param(dbms_metadata.session_transform, 'STORAGE',            false);
-  dbms_metadata.set_transform_param(dbms_metadata.session_transform, 'TABLESPACE',         false);
-  dbms_metadata.set_transform_param(dbms_metadata.session_transform, 'SQLTERMINATOR',      true);
+BEGIN
+  -- Output cleanup options
+  dbms_metadata.set_transform_param(dbms_metadata.session_transform,'STORAGE',false);
+  dbms_metadata.set_transform_param(dbms_metadata.session_transform,'TABLESPACE',false);
+  dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SEGMENT_ATTRIBUTES',false);
+  dbms_metadata.set_transform_param(dbms_metadata.session_transform,'SQLTERMINATOR',true);
 
   ----------------------------------------------------------------------------
   -- TABLES
   ----------------------------------------------------------------------------
-  for rec in (
-    select table_name as object_name
-    from   user_tables
-    order  by table_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('TABLE', rec.object_name, user));
-    exception
+  FOR t IN (SELECT table_name FROM user_tables ORDER BY table_name) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('TABLE', t.table_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for TABLE '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+	
+  END LOOP;
 
   ----------------------------------------------------------------------------
-  -- INDEXES (non-generated)
+  -- INDEXES (non-system)
   ----------------------------------------------------------------------------
-  for rec in (
-    select index_name as object_name
-    from   user_indexes
-    where  generated = 'N'
-    order  by index_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('INDEX', rec.object_name, user));
-    exception
+  FOR i IN (
+    SELECT index_name
+    FROM user_indexes
+    WHERE generated = 'N'
+    ORDER BY index_name
+  ) LOOP
+  begin
+    emit(dbms_metadata.get_ddl('INDEX', i.index_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for INDEX '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
 
   ----------------------------------------------------------------------------
   -- SEQUENCES
   ----------------------------------------------------------------------------
-  for rec in (
-    select sequence_name as object_name
-    from   user_sequences
-    order  by sequence_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('SEQUENCE', rec.object_name, user));
-    exception
+  FOR s IN (
+    SELECT sequence_name
+    FROM user_sequences
+    ORDER BY sequence_name
+  ) LOOP
+  begin
+    emit(dbms_metadata.get_ddl('SEQUENCE', s.sequence_name));
+  exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for SEQUENCE '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+	END LOOP;
 
   ----------------------------------------------------------------------------
   -- VIEWS
   ----------------------------------------------------------------------------
-  for rec in (
-    select view_name as object_name
-    from   user_views
-    order  by view_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('VIEW', rec.object_name, user));
-    exception
+  FOR v IN (
+    SELECT view_name
+    FROM user_views
+    ORDER BY view_name
+  ) LOOP
+  begin
+    emit(dbms_metadata.get_ddl('VIEW', v.view_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for VIEW '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
+
   ----------------------------------------------------------------------------
   -- MATERIALIZED VIEWS
   ----------------------------------------------------------------------------
-  for rec in (
-    select MVIEW_NAME as object_name
-    from   USER_MVIEWS
-    order  by MVIEW_NAME
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('MATERIALIZED VIEW', rec.object_name, user));
-    exception
+  FOR mv IN (
+    SELECT mview_name
+    FROM user_mviews
+    ORDER BY mview_name
+  ) LOOP
+  begin
+    emit(dbms_metadata.get_ddl('MATERIALIZED VIEW', mv.mview_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for VIEW '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
-  ----------------------------------------------------------------------------
-  -- SYNONYMS
-  ----------------------------------------------------------------------------
-  for rec in (
-    select synonym_name as object_name
-    from   user_synonyms
-    order  by synonym_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('SYNONYM', rec.object_name, user));
-    exception
-      when others then
-        dbms_output.put_line('-- Failed to get DDL for SYNONYM '||rec.object_name||': '||sqlerrm);
-        dbms_output.put_line('');
-    end;
-  end loop;
+  END LOOP;
 
   ----------------------------------------------------------------------------
-  -- PACKAGES (specs)
+  -- SYNONYMS (if any)
   ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'PACKAGE'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('PACKAGE', rec.object_name, user));
-    exception
+  FOR syn IN (
+    SELECT synonym_name
+    FROM user_synonyms
+    ORDER BY synonym_name
+  ) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('SYNONYM', syn.synonym_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for PACKAGE '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
+
+  ----------------------------------------------------------------------------
+  -- PACKAGES (specs only)
+  ----------------------------------------------------------------------------
+  FOR p IN (
+    SELECT object_name
+    FROM user_objects
+    WHERE object_type = 'PACKAGE'
+    ORDER BY object_name
+  ) LOOP
+  begin
+    emit(dbms_metadata.get_ddl('PACKAGE', p.object_name));
+	exception
+      when others then
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
+        dbms_output.put_line('');
+    end;
+  END LOOP;
 
   ----------------------------------------------------------------------------
   -- PACKAGE BODIES
   ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'PACKAGE BODY'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('PACKAGE_BODY', rec.object_name, user));
-    exception
+  FOR pb IN (
+    SELECT object_name
+    FROM user_objects
+    WHERE object_type = 'PACKAGE BODY'
+    ORDER BY object_name
+  ) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('PACKAGE_BODY', pb.object_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for PACKAGE BODY '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
 
- ----------------------------------------------------------------------------
-  -- TRIGGERS
-  ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'TRIGGER'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('TRIGGER', rec.object_name, user));
-    exception
-      when others then
-        dbms_output.put_line('-- Failed to get DDL for TRIGGER '||rec.object_name||': '||sqlerrm);
-        dbms_output.put_line('');
-    end;
-  end loop;
   ----------------------------------------------------------------------------
   -- PROCEDURES
   ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'PROCEDURE'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('PROCEDURE', rec.object_name, user));
-    exception
+  FOR pr IN (
+    SELECT object_name
+    FROM user_objects
+    WHERE object_type = 'PROCEDURE'
+    ORDER BY object_name
+  ) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('PROCEDURE', pr.object_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for PROCEDURE '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
 
   ----------------------------------------------------------------------------
   -- FUNCTIONS
   ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'FUNCTION'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('FUNCTION', rec.object_name, user));
-    exception
+  FOR f IN (
+    SELECT object_name
+    FROM user_objects
+    WHERE object_type = 'FUNCTION'
+    ORDER BY object_name
+  ) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('FUNCTION', f.object_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for FUNCTION '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
 
   ----------------------------------------------------------------------------
-  -- TYPES (object / varray)
+  -- TRIGGERS (last, to avoid dependency errors)
   ----------------------------------------------------------------------------
-  for rec in (
-    select type_name as object_name
-    from   user_types
-    order  by type_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('TYPE', rec.object_name, user));
-    exception
+  FOR tr IN (
+    SELECT object_name
+    FROM user_objects
+    WHERE object_type = 'TRIGGER'
+    ORDER BY object_name
+  ) LOOP
+  Begin
+    emit(dbms_metadata.get_ddl('TRIGGER', tr.object_name));
+	exception
       when others then
-        dbms_output.put_line('-- Failed to get DDL for TYPE '||rec.object_name||': '||sqlerrm);
+        dbms_output.put_line('-- Failed to get DDL '||sqlerrm);
         dbms_output.put_line('');
     end;
-  end loop;
+  END LOOP;
 
-  ----------------------------------------------------------------------------
-  -- TYPE BODIES
-  ----------------------------------------------------------------------------
-  for rec in (
-    select object_name
-    from   user_objects
-    where  object_type = 'TYPE BODY'
-    order  by object_name
-  ) loop
-    begin
-      emit(dbms_metadata.get_ddl('TYPE_BODY', rec.object_name, user));
-    exception
-      when others then
-        dbms_output.put_line('-- Failed to get DDL for TYPE BODY '||rec.object_name||': '||sqlerrm);
-        dbms_output.put_line('');
-    end;
-  end loop;
-
-end;
+END;
 /
 spool off;
 
