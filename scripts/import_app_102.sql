@@ -2,7 +2,7 @@ prompt --install
 
 begin
     apex_application_install.set_workspace('UAT');
-    apex_application_install.set_application_id(null);
+    apex_application_install.set_application_id(105);
     apex_application_install.generate_offset;
 end;
 /
