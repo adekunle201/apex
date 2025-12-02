@@ -4,11 +4,16 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # allow manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
+
+    # 🔑 Force all steps in this job to use cmd.exe, not PowerShell
+    defaults:
+      run:
+        shell: cmd
 
     steps:
       - name: Checkout code
@@ -24,4 +29,4 @@ jobs:
           DB_USER: ${{ secrets.DB_DEPLOY_USER }}
           DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
         run: |
-          "C:\sqlcl\bin\sql.exe" -thin "$env:DB_USER/$env:DB_PASS@$env:DB_CONNECT" @scripts/import_all.sql
+          "C:\sqlcl\bin\sql.exe" -thin "%DB_USER%/%DB_PASS%@%DB_CONNECT%" @scripts\import_all.sql
