@@ -8,7 +8,7 @@ end;
 /
 
 @@../apex/app/app_102/f102/application/set_environment.sql
-@@../apex/app/app_102/f102/application/delete_application.sql
+--@@../apex/app/app_102/f102/application/delete_application.sql
 @@../apex/app/app_102/f102/application/create_application.sql
 
 @@../apex/app/app_102/f102/application/application_properties.sql
