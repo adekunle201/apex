@@ -1,15 +1,4 @@
 -- Set workspace for import
-BEGIN
-    apex_application_install.set_workspace(p_workspace_name => 'UAT');  -- replace with your actual workspace
-END;
-/
--- Optional: set application ID if deploying to an existing app
--- BEGIN
---     apex_application_install.set_application_id(p_application_id => 102);
--- END;
--- /
-
--- Then include all your files
 @@application/set_environment.sql
 --@@application/delete_application.sql   -- only if you want to remove old app
 @@application/create_application.sql
