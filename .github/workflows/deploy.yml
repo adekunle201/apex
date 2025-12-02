@@ -28,7 +28,7 @@ jobs:
           DB_USER: ${{ secrets.DB_DEPLOY_USER }}
           DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
         run: |
-          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @"%GITHUB_WORKSPACE%\db\schema_baselines.sql"
+          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @apex\db\schema_baselines.sql
 
       - name: Run import_all.sql (APEX App + DB items)
         env:
@@ -36,4 +36,4 @@ jobs:
           DB_USER: ${{ secrets.DB_DEPLOY_USER }}
           DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
         run: |
-          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @"%GITHUB_WORKSPACE\app\app_102\f102.sql"
+          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -s -L -thin %DB_USER%@%DB_CONNECT% @apex\app\app_102\f102.sql
