@@ -1,8 +1,12 @@
 prompt --install
-
-begin
-    apex_application_install.set_workspace('UAT');
-    apex_application_install.set_application_id(102);
+DECLARE
+    l_new_app_id NUMBER;
+BEGIN
+     apex_application_install.set_workspace('UAT');
+    --apex_application_install.set_application_id(102);
+-- Automatically generate a new unique application ID
+    l_new_app_id := APEX_APPLICATION_INSTALL.GET_AUTO_APPLICATION_ID;
+    APEX_APPLICATION_INSTALL.SET_APPLICATION_ID(p_application_id => l_new_app_id);
     apex_application_install.generate_offset;
 end;
 /
