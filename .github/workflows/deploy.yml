@@ -1,0 +1,27 @@
+name: Deploy APEX and DB
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # allow manual trigger
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Ensure SQLcl works
+        run: |
+          "C:\sqlcl\bin\sql.exe" -v
+
+      - name: Deploy schema + APEX app
+        env:
+          DB_CONNECT: ${{ secrets.DB_CONNECT_STRING }}
+          DB_USER: ${{ secrets.DB_DEPLOY_USER }}
+          DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
+        run: |
+          "C:\sqlcl\bin\sql.exe" -thin "$env:DB_USER/$env:DB_PASS@$env:DB_CONNECT" @scripts/import_all.sql

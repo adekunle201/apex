@@ -1,0 +1,465 @@
+prompt --application/shared_components/workflow/workflows/employee_appraisal
+begin
+--   Manifest
+--     WORKFLOW: Employee Appraisal
+--   Manifest End
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2024.11.30'
+,p_release=>'24.2.0'
+,p_default_workspace_id=>2200437608860210
+,p_default_application_id=>101
+,p_default_id_offset=>2202822233886717
+,p_default_owner=>'CICD'
+);
+wwv_flow_imp_shared.create_workflow(
+ p_id=>wwv_flow_imp.id(1493593553552442875)
+,p_name=>'Employee Appraisal'
+,p_static_id=>'EMPLOYEE_APPRAISAL'
+,p_title=>'Appraisal for &SUBJECT.'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1513818203528464344)
+,p_workflow_id=>wwv_flow_imp.id(1493593553552442875)
+,p_label=>'Subject'
+,p_static_id=>'SUBJECT'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+);
+wwv_flow_imp_shared.create_workflow_version(
+ p_id=>wwv_flow_imp.id(1493593678278442876)
+,p_workflow_id=>wwv_flow_imp.id(1493593553552442875)
+,p_version=>'1.0'
+,p_state=>'DEVELOPMENT'
+,p_query_type=>'SQL'
+,p_query_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select a.id, a.appraisal_date',
+'from eba_demo_appr_appraisals a',
+'left join eba_demo_appr_emp e',
+'       on e.empno = a.empno',
+'where a.id = :APEX$WORKFLOW_DETAIL_PK'))
+,p_diagram=>'orthogonal'
+,p_comment=>'This workflow orchestrates the employee evaluation process beginning with an employee self evaluation. It''s detail primary key is the ID column in the EBA_DEMO_APPR_APPRAISALS system of record table. This is configured in the "Additional Data" sectio'
+||'n above.'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1510211216607862045)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_label=>'VP Username'
+,p_static_id=>'VP_USERNAME'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1493593773248442877)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Start'
+,p_static_id=>'New'
+,p_display_sequence=>10
+,p_activity_type=>'NATIVE_WORKFLOW_START'
+,p_diagram=>'{"position":{"x":690,"y":710},"z":-83}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1493593797392442878)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Self-Evaluation'
+,p_static_id=>'SelfEvaluation'
+,p_display_sequence=>30
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(1224376168439769092)
+,p_attribute_05=>'APEX$WORKFLOW_DETAIL_PK'
+,p_attribute_10=>'N'
+,p_due_on_type=>'EXPRESSION'
+,p_due_on_language=>'PLSQL'
+,p_due_on_value=>':APPRAISAL_DATE'
+,p_diagram=>'{"position":{"x":850,"y":840},"z":-74}'
+,p_comment=>'Start with the employee''s completing a self-evaluation.'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1493593947022442879)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'End'
+,p_static_id=>'New_2'
+,p_display_sequence=>100
+,p_activity_type=>'NATIVE_WORKFLOW_END'
+,p_attribute_01=>'COMPLETED'
+,p_diagram=>'{"position":{"x":690,"y":1300},"z":-82}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507165473869601134)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Manager Appraisal'
+,p_static_id=>'ManagerAppraisal'
+,p_display_sequence=>50
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(1507190781520668753)
+,p_attribute_05=>'APEX$WORKFLOW_DETAIL_PK'
+,p_attribute_10=>'N'
+,p_diagram=>'{"position":{"x":850,"y":960},"z":-75}'
+,p_comment=>'Next, have the employee''s manager add their evaluation.'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507165503562601135)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'VP Review'
+,p_static_id=>'VPReview'
+,p_display_sequence=>70
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(1507189290245664732)
+,p_attribute_05=>'APEX$WORKFLOW_DETAIL_PK'
+,p_attribute_10=>'N'
+,p_diagram=>'{"position":{"x":850,"y":1210},"z":-79}'
+,p_comment=>'Finally, have the VP review the evaluation.'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(1511343164930839771)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507165503562601135)
+,p_task_def_param_id=>wwv_flow_imp.id(1511342744356839768)
+,p_value_type=>'ITEM'
+,p_value=>'VP_USERNAME'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507166184180601141)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Appraisal Submitted'
+,p_static_id=>'AppraisalSubmitted'
+,p_display_sequence=>40
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_APPRAISAL_STATUS'
+,p_diagram=>'{"position":{"x":1200,"y":840},"z":-73}'
+,p_comment=>'Mark the appraisal as SUBMITTED by the employee.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507166381777601143)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166184180601141)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507166486533601144)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166184180601141)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'SUBMITTED'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507166496484601145)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Manager Submitted'
+,p_static_id=>'ManagerSubmitted'
+,p_display_sequence=>60
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_APPRAISAL_STATUS'
+,p_diagram=>'{"position":{"x":1200,"y":960},"z":-76}'
+,p_comment=>'Mark the appraisal as MGR_SUBMITTED by the manager.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507166753898601147)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166496484601145)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507166824800601148)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166496484601145)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'MGR_SUBMITTED'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507166941255601149)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'VP Reviewed'
+,p_static_id=>'VPReviewed'
+,p_display_sequence=>80
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_APPRAISAL_STATUS'
+,p_diagram=>'{"position":{"x":1200,"y":1210},"z":-80}'
+,p_comment=>'Mark the appraisal as VP_REVIEWED by the VP.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507167004818601150)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166941255601149)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507167186294601151)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507166941255601149)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'VP_REVIEWED'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1507167405087601154)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Appraisal Originated'
+,p_static_id=>'AppraisalOriginated'
+,p_display_sequence=>20
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_APPRAISAL_STATUS'
+,p_diagram=>'{"position":{"x":1020,"y":710},"z":-72}'
+,p_comment=>'Mark the appraisal as ORIGINATED.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507167658391601156)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507167405087601154)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1507167693646601157)
+,p_workflow_activity_id=>wwv_flow_imp.id(1507167405087601154)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'ORIGINATED'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1510210668584862039)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Determine VP'
+,p_static_id=>'DetermineVP'
+,p_display_sequence=>110
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'DETERMINE_APPRAISAL_VP'
+,p_diagram=>'{"position":{"x":850,"y":1080},"z":-77}'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1510210924535862042)
+,p_workflow_activity_id=>wwv_flow_imp.id(1510210668584862039)
+,p_name=>'p_appraisal_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1543743265199173977)
+,p_workflow_activity_id=>wwv_flow_imp.id(1510210668584862039)
+,p_name=>'p_vp_username'
+,p_direction=>'IN_OUT'
+,p_data_type=>'VARCHAR2'
+,p_ignore_output=>false
+,p_display_sequence=>30
+,p_value_type=>'ITEM'
+,p_value=>'VP_USERNAME'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1510211098955862044)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'VP Required?'
+,p_static_id=>'New_3'
+,p_display_sequence=>120
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'TRUE_FALSE_CHECK'
+,p_attribute_03=>'WF_VARIABLE_NEQ_VAL'
+,p_attribute_08=>'VP_USERNAME'
+,p_attribute_14=>'NONE'
+,p_diagram=>'{"position":{"x":1200,"y":1080},"z":-78}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1510211361038862046)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_name=>'Appraisal Completed'
+,p_static_id=>'VPReviewed_1'
+,p_display_sequence=>90
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_APPRAISAL_STATUS'
+,p_diagram=>'{"position":{"x":1020,"y":1300},"z":-81}'
+,p_comment=>'Mark the appraisal as VP_REVIEWED by the VP.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1510211538358862048)
+,p_workflow_activity_id=>wwv_flow_imp.id(1510211361038862046)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'APEX$WORKFLOW_DETAIL_PK'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1510211656516862049)
+,p_workflow_activity_id=>wwv_flow_imp.id(1510211361038862046)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>false
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'COMPLETED'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1493594062937442880)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1493593773248442877)
+,p_to_activity_id=>wwv_flow_imp.id(1507167405087601154)
+,p_diagram=>'{"source":{},"target":{"name":"topLeft","args":{"dx":"68.182%","dy":"50%","rotate":true}},"vertices":[],"z":4,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1507165638197601136)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1493593797392442878)
+,p_to_activity_id=>wwv_flow_imp.id(1507166184180601141)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"18.182%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"90.909%","dy":"50%","rotate":true}},"vertices":[],"z":8,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1507165710285601137)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507165473869601134)
+,p_to_activity_id=>wwv_flow_imp.id(1507166496484601145)
+,p_diagram=>'{"source":{"args":{"dx":"54.545%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"name":"topLeft","args":{"dx":"81.818%","dy":"50%","rotate":true}},"vertices":[],"z":9,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1493594163637442881)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507165503562601135)
+,p_to_activity_id=>wwv_flow_imp.id(1507166941255601149)
+,p_diagram=>'{"source":{"args":{"dx":"50%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"name":"topLeft","args":{"dx":"50%","dy":"50%","rotate":true}},"vertices":[],"z":5,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1507166273983601142)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507166184180601141)
+,p_to_activity_id=>wwv_flow_imp.id(1507165473869601134)
+,p_diagram=>'{"source":{"args":{"dx":"59.091%","dy":"83.333%","rotate":true},"name":"topLeft"},"target":{"args":{"dx":"54.545%","dy":"50%","rotate":true},"name":"topLeft"},"vertices":[{"x":1020,"y":930}],"z":11,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1510211077428862043)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507166496484601145)
+,p_to_activity_id=>wwv_flow_imp.id(1510210668584862039)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.091%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"45.455%","dy":"50%","rotate":true}},"vertices":[{"x":840,"y":1060}],"z":19,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1510211703786862050)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507166941255601149)
+,p_to_activity_id=>wwv_flow_imp.id(1510211361038862046)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"54.545%","dy":"16.667%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"68.182%","dy":"33.333%","rotate":true}},"vertices":[{"x":1290,"y":1320}],"router":{"name":"orthogonal","args":{"padding":20}},"'
+||'z":23,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1507167857144601158)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1507167405087601154)
+,p_to_activity_id=>wwv_flow_imp.id(1493593797392442878)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.091%","dy":"33.333%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"54.545%","dy":"16.667%","rotate":true}},"vertices":[{"x":1040,"y":800}],"z":17,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1507167278886601152)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1510210668584862039)
+,p_to_activity_id=>wwv_flow_imp.id(1510211098955862044)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"31.818%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"63.638%","dy":"50%","rotate":true}},"vertices":[],"z":14,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1510211846368862051)
+,p_name=>'No VP Available'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1510211098955862044)
+,p_to_activity_id=>wwv_flow_imp.id(1510211361038862046)
+,p_condition_expr1=>'FALSE'
+,p_diagram=>'{"source":{"args":{"dx":"31.822%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"args":{"dx":"63.636%","dy":"66.667%","rotate":true},"name":"topLeft"},"vertices":[{"x":1460,"y":1160}],"z":24,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1510211982863862052)
+,p_name=>'Yes'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1510211098955862044)
+,p_to_activity_id=>wwv_flow_imp.id(1507165503562601135)
+,p_condition_expr1=>'TRUE'
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.093%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"50%","dy":"50%","rotate":true}},"vertices":[{"x":1090,"y":1170}],"z":25,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1510211420946862047)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1510211361038862046)
+,p_to_activity_id=>wwv_flow_imp.id(1493593947022442879)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"22.727%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"66.667%","dy":"50%","rotate":true}},"vertices":[],"z":22,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(1510210336891862036)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_participant_type=>'OWNER'
+,p_name=>'New'
+,p_identity_type=>'USER'
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>'eba_demo_appr.userlist_for_department(''OPERATIONS'')'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(1510210411314862037)
+,p_workflow_version_id=>wwv_flow_imp.id(1493593678278442876)
+,p_participant_type=>'ADMIN'
+,p_name=>'New_1'
+,p_identity_type=>'USER'
+,p_value_type=>'STATIC'
+,p_value=>'PAT'
+);
+wwv_flow_imp.component_end;
+end;
+/

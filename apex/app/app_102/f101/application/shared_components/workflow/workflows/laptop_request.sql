@@ -1,0 +1,639 @@
+prompt --application/shared_components/workflow/workflows/laptop_request
+begin
+--   Manifest
+--     WORKFLOW: Laptop Request
+--   Manifest End
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2024.11.30'
+,p_release=>'24.2.0'
+,p_default_workspace_id=>2200437608860210
+,p_default_application_id=>101
+,p_default_id_offset=>2202822233886717
+,p_default_owner=>'CICD'
+);
+wwv_flow_imp_shared.create_workflow(
+ p_id=>wwv_flow_imp.id(1244793537976931543)
+,p_name=>'Laptop Request'
+,p_static_id=>'LAPTOP_REQUEST'
+,p_title=>'Request for &P_LAPTOP_TYPE. by emp ID &P_EMPNO.'
+,p_comment=>'Laptop Request Workflow'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1244794265038931550)
+,p_workflow_id=>wwv_flow_imp.id(1244793537976931543)
+,p_label=>'Employee ID'
+,p_static_id=>'P_EMPNO'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_is_required=>true
+,p_value=>'Y'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1244794346615931551)
+,p_workflow_id=>wwv_flow_imp.id(1244793537976931543)
+,p_label=>'Laptop Request ID'
+,p_static_id=>'P_LAPTOP_REQUEST_ID'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_is_required=>true
+,p_value=>'Y'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1244794388793931552)
+,p_workflow_id=>wwv_flow_imp.id(1244793537976931543)
+,p_label=>'Laptop Type'
+,p_static_id=>'P_LAPTOP_TYPE'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>true
+,p_value=>'Y'
+);
+wwv_flow_imp_shared.create_workflow_version(
+ p_id=>wwv_flow_imp.id(1244793609660931544)
+,p_workflow_id=>wwv_flow_imp.id(1244793537976931543)
+,p_version=>'1.0'
+,p_state=>'DEVELOPMENT'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(16164842051806643)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_label=>'Delivered from Stock'
+,p_static_id=>'V_DELIVERED_FROM_STOCK'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1244795196903931560)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_label=>'Laptop Approver'
+,p_static_id=>'V_APPROVER'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1244795289216931561)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_label=>'Laptop Approval Outcome'
+,p_static_id=>'V_TASK_OUTCOME'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1513818402093464346)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_label=>'Approval Task ID'
+,p_static_id=>'V_APPROVAL_TASK_ID'
+,p_direction=>'VARIABLE'
+,p_data_type=>'NUMBER'
+,p_is_required=>false
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(1513821603693464378)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_label=>'Email to Notify'
+,p_static_id=>'V_EMAIL_TO_NOTIFY'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>'apex_app_setting.get_value(''DEMO_NOTIFICATION_EMAIL'')'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(16163696692806631)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Procure Laptop'
+,p_static_id=>'New_3'
+,p_display_sequence=>190
+,p_activity_type=>'NATIVE_INVOKE_WF'
+,p_attribute_01=>wwv_flow_imp.id(16161498974806609)
+,p_attribute_03=>'P_LAPTOP_REQUEST_ID'
+,p_attribute_05=>'Y'
+,p_attribute_06=>'RESUME'
+,p_diagram=>'{"position":{"x":1220,"y":1140},"z":36}'
+);
+wwv_flow_imp_shared.create_workflow_comp_param(
+ p_id=>wwv_flow_imp.id(16164784316806642)
+,p_workflow_activity_id=>wwv_flow_imp.id(16163696692806631)
+,p_workflow_variable_id=>wwv_flow_imp.id(16164682198806641)
+,p_value_type=>'ITEM'
+,p_value=>'V_DELIVERED_FROM_STOCK'
+,p_ignore_output=>false
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244793731695931545)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Start'
+,p_static_id=>'New'
+,p_display_sequence=>10
+,p_activity_type=>'NATIVE_WORKFLOW_START'
+,p_diagram=>'{"position":{"x":970,"y":670},"z":1}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244793869595931546)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Request Pending'
+,p_static_id=>'RequestPending'
+,p_display_sequence=>20
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_LAPTOP_REQUEST'
+,p_diagram=>'{"position":{"x":890,"y":770},"z":-124}'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244794571899931553)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'P_LAPTOP_REQUEST_ID'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244794614544931554)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>true
+,p_display_sequence=>20
+,p_value_type=>'STATIC'
+,p_value=>'PENDING'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244794761533931555)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_workflow_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>30
+,p_value_type=>'STATIC'
+,p_value=>'&APEX$WORKFLOW_ID.'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244794897540931557)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_approver'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>true
+,p_display_sequence=>50
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244795041543931558)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_decision_date'
+,p_direction=>'IN'
+,p_data_type=>'DATE'
+,p_has_default=>true
+,p_display_sequence=>60
+,p_value_type=>'API_DEFAULT'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1513820426792464366)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_approval_task_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>70
+,p_value_type=>'API_DEFAULT'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1513820584432464367)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_name=>'p_delivery_action_task_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>80
+,p_value_type=>'API_DEFAULT'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244795171255931559)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Approve Request'
+,p_static_id=>'ApproveRequest'
+,p_display_sequence=>40
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(1257701302371964080)
+,p_attribute_04=>'V_APPROVAL_TASK_ID'
+,p_attribute_05=>'P_LAPTOP_REQUEST_ID'
+,p_attribute_08=>'V_TASK_OUTCOME'
+,p_attribute_09=>'V_APPROVER'
+,p_attribute_10=>'N'
+,p_diagram=>'{"position":{"x":1200,"y":770},"z":-123}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244795582324931563)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Update Request'
+,p_static_id=>'UpdateRequest'
+,p_display_sequence=>50
+,p_activity_type=>'NATIVE_INVOKE_API'
+,p_attribute_01=>'PLSQL_PACKAGE'
+,p_attribute_03=>'EBA_DEMO_APPR'
+,p_attribute_04=>'UPDATE_LAPTOP_REQUEST'
+,p_diagram=>'{"position":{"x":1480,"y":770},"z":-121}'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244795620464931564)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>false
+,p_display_sequence=>10
+,p_value_type=>'ITEM'
+,p_value=>'P_LAPTOP_REQUEST_ID'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244795707664931565)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_status'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>true
+,p_display_sequence=>20
+,p_value_type=>'ITEM'
+,p_value=>'V_TASK_OUTCOME'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244795822029931566)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_workflow_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>30
+,p_value_type=>'API_DEFAULT'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244796073887931568)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_approver'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_has_default=>true
+,p_display_sequence=>50
+,p_value_type=>'ITEM'
+,p_value=>'V_APPROVER'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1244796098370931569)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_decision_date'
+,p_direction=>'IN'
+,p_data_type=>'DATE'
+,p_has_default=>true
+,p_display_sequence=>60
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>'sysdate'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1513818633912464348)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_approval_task_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>70
+,p_value_type=>'ITEM'
+,p_value=>'V_APPROVAL_TASK_ID'
+);
+wwv_flow_imp_shared.create_invokeapi_comp_param(
+ p_id=>wwv_flow_imp.id(1513818782902464349)
+,p_workflow_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_name=>'p_delivery_action_task_id'
+,p_direction=>'IN'
+,p_data_type=>'NUMBER'
+,p_has_default=>true
+,p_display_sequence=>80
+,p_value_type=>'API_DEFAULT'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244796248342931570)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Approved?'
+,p_static_id=>'Approved'
+,p_display_sequence=>60
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'CHECK_WF_VARIABLE'
+,p_attribute_10=>'V_TASK_OUTCOME'
+,p_diagram=>'{"position":{"x":890,"y":890},"z":-125}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244796524608931573)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'End'
+,p_static_id=>'New_6'
+,p_display_sequence=>140
+,p_activity_type=>'NATIVE_WORKFLOW_END'
+,p_attribute_01=>'COMPLETED'
+,p_diagram=>'{"position":{"x":1790,"y":1040},"z":12}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1244796779654931575)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Email Approved'
+,p_static_id=>'EmailApproved'
+,p_display_sequence=>90
+,p_query_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select ename,',
+'       case :P_LAPTOP_TYPE when ''MAC'' then ''MacBook Pro''',
+'                           when ''WIN'' then ''Lenovo T490''',
+'       end as laptop_type',
+'from eba_demo_appr_emp',
+'where empno = :P_EMPNO'))
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'&APP_EMAIL.'
+,p_attribute_02=>'&V_EMAIL_TO_NOTIFY.'
+,p_attribute_06=>'&LAPTOP_TYPE. Laptop for &ENAME. Approved'
+,p_attribute_07=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'Dear &ENAME.,',
+'',
+'Congratulations, your laptop request for &LAPTOP_TYPE. has been approved.',
+'',
+'Best Regards,',
+'  The backoffice team'))
+,p_attribute_10=>'Y'
+,p_diagram=>'{"position":{"x":890,"y":1140},"z":-127}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1513819118962464353)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Email Delivered'
+,p_static_id=>'EmailDelivered'
+,p_display_sequence=>130
+,p_query_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select ename,',
+'       case :P_LAPTOP_TYPE when ''MAC'' then ''MacBook Pro''',
+'                           when ''WIN'' then ''Lenovo T490''',
+'       end as laptop_type',
+'from eba_demo_appr_emp',
+'where empno = :P_EMPNO'))
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'&APP_EMAIL.'
+,p_attribute_02=>'&V_EMAIL_TO_NOTIFY.'
+,p_attribute_10=>'Y'
+,p_attribute_11=>wwv_flow_imp.id(20094669161402079)
+,p_attribute_12=>'{"P_LAPTOP_TYPE":"&LAPTOP_TYPE.","P_ENAME":"&ENAME.","P_DELIVERED_FROM_STOCK":"&V_DELIVERED_FROM_STOCK."}'
+,p_diagram=>'{"position":{"x":1510,"y":1140},"z":-131}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1513820650207464368)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'New'
+,p_static_id=>'New_2'
+,p_display_sequence=>150
+,p_activity_type=>'NATIVE_WORKFLOW_WAIT'
+,p_attribute_01=>'EXPRESSION'
+,p_attribute_03=>'eba_demo_appr.rejection_delay_until_time'
+,p_attribute_06=>'PLSQL'
+,p_diagram=>'{"position":{"x":1270,"y":890},"z":22}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1513821058160464372)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Email Rejected'
+,p_static_id=>'EmailRejected'
+,p_display_sequence=>100
+,p_query_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'select ename,',
+'       case :P_LAPTOP_TYPE when ''MAC'' then ''MacBook Pro''',
+'                           when ''WIN'' then ''Lenovo T490''',
+'       end as laptop_type',
+'from eba_demo_appr_emp',
+'where empno = :P_EMPNO'))
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'&APP_EMAIL.'
+,p_attribute_02=>'&DEMO_NOTIFICATION_EMAIL.'
+,p_attribute_06=>'&LAPTOP_TYPE. Laptop for &ENAME. Rejected'
+,p_attribute_07=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'Dear &ENAME.,',
+'',
+'Sorry, your laptop request for &LAPTOP_TYPE. was not approved.',
+'',
+'Best Regards,',
+'  The backoffice team'))
+,p_attribute_10=>'Y'
+,p_diagram=>'{"position":{"x":1690,"y":890},"z":-120}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1513821380595464375)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Notify Approved?'
+,p_static_id=>'NotifyApproved'
+,p_display_sequence=>160
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'TRUE_FALSE_CHECK'
+,p_attribute_03=>'WF_VARIABLE_NOT_NULL'
+,p_attribute_08=>'V_EMAIL_TO_NOTIFY'
+,p_diagram=>'{"position":{"x":890,"y":1020},"z":-126}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1513821927836464381)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Notify Delivered?'
+,p_static_id=>'NotifyDelivered'
+,p_display_sequence=>170
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'TRUE_FALSE_CHECK'
+,p_attribute_03=>'WF_VARIABLE_NOT_NULL'
+,p_attribute_08=>'V_EMAIL_TO_NOTIFY'
+,p_diagram=>'{"position":{"x":1220,"y":1270},"z":-130}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(1524036710660448439)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_name=>'Notify Rejected?'
+,p_static_id=>'New_1'
+,p_display_sequence=>180
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'TRUE_FALSE_CHECK'
+,p_attribute_03=>'WF_VARIABLE_NOT_NULL'
+,p_attribute_08=>'V_EMAIL_TO_NOTIFY'
+,p_diagram=>'{"position":{"x":1380,"y":890},"z":-122}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(16163886477806633)
+,p_name=>'New_1'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(16163696692806631)
+,p_to_activity_id=>wwv_flow_imp.id(1513821927836464381)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.091%","dy":"66.667%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"59.093%","dy":"50%","rotate":true}},"vertices":[],"z":38,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244794024184931548)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1244793731695931545)
+,p_to_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":4,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244795394170931562)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1244793869595931546)
+,p_to_activity_id=>wwv_flow_imp.id(1244795171255931559)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":7,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244794172755931549)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1244795171255931559)
+,p_to_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"13.636%","dy":"50%","rotate":true}},"target":{},"vertices":[],"z":5,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244796378555931571)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1244795582324931563)
+,p_to_activity_id=>wwv_flow_imp.id(1244796248342931570)
+,p_diagram=>'{"source":{},"target":{},"vertices":[{"x":1590,"y":860},{"x":1000,"y":860}],"z":10,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244796407773931572)
+,p_name=>'Rejected'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1244796248342931570)
+,p_to_activity_id=>wwv_flow_imp.id(1513820650207464368)
+,p_condition_type=>'EQUALS'
+,p_condition_expr1=>'REJECTED'
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":11,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244796650747931574)
+,p_name=>'Approved'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1244796248342931570)
+,p_to_activity_id=>wwv_flow_imp.id(1513821380595464375)
+,p_condition_type=>'EQUALS'
+,p_condition_expr1=>'APPROVED'
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"50.003%","dy":"50%","rotate":true}},"target":{"name":"topLeft","args":{"dx":"50.003%","dy":"66.66%","rotate":true}},"vertices":[],"z":13,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1244796876265931576)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1244796779654931575)
+,p_to_activity_id=>wwv_flow_imp.id(16163696692806631)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":15,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1513819390618464356)
+,p_name=>'Done'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1513819118962464353)
+,p_to_activity_id=>wwv_flow_imp.id(1244796524608931573)
+,p_diagram=>'{"source":{"args":{"dx":"31.818%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"args":{"dx":"33.333%","dy":"33.333%","rotate":true},"name":"topLeft"},"vertices":[{"x":1810,"y":1170}],"z":19,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1513820690523464369)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1513820650207464368)
+,p_to_activity_id=>wwv_flow_imp.id(1524036710660448439)
+,p_diagram=>'{"source":{"args":{"dx":"50%","dy":"50%","rotate":true},"name":"topLeft"},"target":{},"vertices":[],"z":23,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1513821213843464374)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(1513821058160464372)
+,p_to_activity_id=>wwv_flow_imp.id(1244796524608931573)
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.091%","dy":"50%","rotate":true}},"target":{"args":{"dx":"50%","dy":"50%","rotate":true},"name":"topLeft"},"vertices":[],"z":25,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1513821702950464379)
+,p_name=>'Yes'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1513821380595464375)
+,p_to_activity_id=>wwv_flow_imp.id(1244796779654931575)
+,p_condition_expr1=>'TRUE'
+,p_diagram=>'{"source":{"args":{"dx":"50.003%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"name":"topLeft","args":{"dx":"50%","dy":"33.333%","rotate":true}},"vertices":[],"z":27,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1513821864279464380)
+,p_name=>'No'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1513821380595464375)
+,p_to_activity_id=>wwv_flow_imp.id(16163696692806631)
+,p_condition_expr1=>'FALSE'
+,p_diagram=>'{"source":{"args":{"dx":"36.367%","dy":"50%","rotate":true},"name":"topLeft"},"target":{"args":{"dx":"59.091%","dy":"33.333%","rotate":true},"name":"topLeft"},"vertices":[{"x":1350,"y":1050}],"z":28,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1524036513896448437)
+,p_name=>'Yes'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1513821927836464381)
+,p_to_activity_id=>wwv_flow_imp.id(1513819118962464353)
+,p_condition_expr1=>'TRUE'
+,p_diagram=>'{"source":{"args":{"dx":-10,"dy":0},"name":"right"},"target":{"name":"topLeft","args":{"dx":"59.091%","dy":"50%","rotate":true}},"vertices":[{"x":1640,"y":1300}],"z":31,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1524036654793448438)
+,p_name=>'No'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1513821927836464381)
+,p_to_activity_id=>wwv_flow_imp.id(1244796524608931573)
+,p_condition_expr1=>'FALSE'
+,p_diagram=>'{"source":{"name":"topLeft","args":{"dx":"59.093%","dy":"66.66%","rotate":true}},"target":{"args":{"dx":"66.667%","dy":"50%","rotate":true},"name":"topLeft"},"vertices":[{"x":1350,"y":1360},{"x":1830,"y":1360}],"z":32,"label":{"distance":0.5,"offset"'
+||':0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1524036794557448440)
+,p_name=>'Yes'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1524036710660448439)
+,p_to_activity_id=>wwv_flow_imp.id(1513821058160464372)
+,p_condition_expr1=>'TRUE'
+,p_diagram=>'{"source":{},"target":{"args":{"dx":"90.909%","dy":"50%","rotate":true},"name":"topLeft"},"vertices":[],"z":34,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(1524036945181448441)
+,p_name=>'No'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(1524036710660448439)
+,p_to_activity_id=>wwv_flow_imp.id(1244796524608931573)
+,p_condition_expr1=>'FALSE'
+,p_diagram=>'{"source":{"name":"bottom","args":{"dx":0,"dy":-10}},"target":{"name":"topLeft","args":{"dx":"50%","dy":"50%","rotate":true}},"vertices":[{"x":1490,"y":1070}],"z":35,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(1510210134991862034)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_participant_type=>'ADMIN'
+,p_name=>'Administrator'
+,p_identity_type=>'USER'
+,p_value_type=>'STATIC'
+,p_value=>'PAT'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(1510210211275862035)
+,p_workflow_version_id=>wwv_flow_imp.id(1244793609660931544)
+,p_participant_type=>'OWNER'
+,p_name=>'Owner'
+,p_identity_type=>'USER'
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>'eba_demo_appr.userlist_for_department(''OPERATIONS'')'
+);
+wwv_flow_imp.component_end;
+end;
+/
