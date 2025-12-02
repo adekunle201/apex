@@ -29,4 +29,4 @@ jobs:
           DB_USER: ${{ secrets.DB_DEPLOY_USER }}
           DB_PASS: ${{ secrets.DB_DEPLOY_PASSWORD }}
         run: |
-          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -thin %DB_USER%@%DB_CONNECT% @scripts\import_all.sql
+          echo %DB_PASS% | "C:\sqlcl\bin\sql.exe" -thin %DB_USER%@%DB_CONNECT% @apex\db\schema_baselines.sql
